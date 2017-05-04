@@ -1,0 +1,72 @@
+#caidan{text-decoration: none;}
+#caidan ul li{float: left;}
+
+.page {
+	margin-left: 50px;
+	padding: 20px;
+}
+
+.showpage {
+	width: 520px;
+	height: 50px;
+	margin-top: 20px;
+}
+
+#showimg ul li {
+	margin: 10px;
+	float: left;
+	width: 120px;
+	text-align: center;
+	list-style: none;
+	margin-left: -5px;
+	margin-top: 10px;
+}
+
+#showimg {
+	width: 600px;
+	height: 700px;
+}
+
+img {
+	border: 0px;
+}
+#top{
+}
+#caidan{
+width: 650px;
+height:50px;
+}
+
+#uploadimg{
+width:326px;
+height:40px;
+border: 0px;
+color: #5d7895;
+border:1 solid red;
+font-size: 26;
+float: left;
+background-color: white;
+}
+  #svseAlbum{
+width:322px;
+height:40px;
+border: 0px;
+border:1 solid red;
+font-size: 26;
+color: #5d7895;
+margin-left: 2px;
+background-color: white;
+  }
+  
+  #svsePhotePre{
+  margin-left: 10px;
+  }
+  #butt{
+  	width: 50px;
+  	background: #839e99;
+  	border:0px;
+  	
+  }
+  #svsePhotePre{
+  	font-size: 10pt;
+  }

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.t1.qqzone.persistence.PhotoMapper">
+
+	<!-- 查询所有 -->
+	<select id="findPhoto" resultMap="photoResultMap">
+		select @rownum:=@rownum+1 rownum,
+        result.photoid, result.pname, result.dicid, result.albumid, result.pcreatetime, result.pcontent, result.thumbanil,result.pdescribe
+        FROM (
+        select @rownum:=0, Photos.* from Photos where
+        albumid=#{albumid}) result
+	</select>
+	<!-- 相册内查询 -->
+	<select id="findPhotoByAlbumID" resultMap="photoResultMap">
+	 	select t.rownum, t.photoid, t.pname, t.dicid, t.albumid, t.pcreatetime, t.pcontent, t.thumbanil,t.pdescribe  from (
+        <include refid="getListSqlContainsRn" /> <include refid="orderBySql"/>
+        ) t <!-- #{}表示参数化输出，${}表示直接输出不进行任何转义操作，自己进行转移 -->
+        <if test="pageStart>-1 and pageSize>-1">
+            limit #{page.pageStart}, #{page.pageSize}
+        </if>
+	</select>
+	<sql id="orderBySql">
+        order by ${page.orderFieldStr} ${page.orderDirectionStr}
+    </sql>
+    <sql id="getListSqlContainsRn">
+        select @rownum:=@rownum+1 rownum,
+        result.photoid, result.pname, result.dicid, result.albumid, result.pcreatetime, result.pcontent, result.thumbanil,result.pdescribe
+        FROM (
+        select @rownum:=0, Photos.* from Photos where
+        albumid=#{albumid}) result
+    </sql>
+	
+	<!-- 添加 -->
+	<insert id="insertPhoto" parameterType="Photo" >
+		insert into Photos values(#{photoid},#{album.albumId},#{dic.dicid},#{pcreatetime},#{pname},#{pcontent},#{thumbanil},#{describe});
+	</insert>
+
+	<!-- 查询单个 -->
+	<select id="findPhotoById" resultMap="photoResultMap">
+		select @rownum:=@rownum+1 rownum,
+        result.photoid, result.pname, result.dicid, result.albumid, result.pcreatetime, result.pcontent, result.thumbanil,result.pdescribe
+        FROM (
+        select @rownum:=0, Photos.* from Photos where
+        photoId = #{photoId}) result
+	</select>
+	
+	<!-- 上一条 -->
+	<select id="findPhotoPreviousPage" resultMap="photoResultMap" parameterType="java.util.Map">
+	    select * from (select @rownum:=@rownum+1 rownum ,
+        result.photoid, result.pname, result.dicid, result.albumid, result.pcreatetime, result.pcontent, result.thumbanil,result.pdescribe
+        FROM (
+        select @rownum:=0, Photos.* from Photos where
+        albumid=#{albumid}) result) t where t.rownum &lt; #{rownum} order by t.rownum desc limit 1
+	</select>
+	<!-- 下一条 -->
+	<select id="findPhotoNextPage" resultMap="photoResultMap" parameterType="java.util.Map">
+		select * from (select @rownum:=@rownum+1 rownum,
+        result.photoid, result.pname, result.dicid, result.albumid, result.pcreatetime, result.pcontent, result.thumbanil,result.pdescribe
+        FROM (
+        select @rownum:=0, Photos.* from Photos where
+        albumid=#{albumid}) result ) t where t.rownum > #{rownum} order by t.rownum asc limit 1
+	</select>
+
+	<!-- 修改 -->
+	<update id="updatePhoto" parameterType="photo">
+		update photos set pname=#{pname},dicid=#{dic.dicid},pdescribe=#{describe} where photoid=#{photoid}
+	</update>
+	
+	<!-- 删除 -->
+	<delete id="deletePhoto" parameterType="string">
+		delete from photos where photoid = #{photoid}
+	</delete>
+	
+	<!-- 删除相册 -->
+	<delete id="deletePhotoByAlbumId" parameterType="string">
+		delete from photos where albumid = #{albumid}
+	</delete>
+	
+	<resultMap type="Photo" id="photoResultMap">
+		<id property="photoid" column="photoid" />
+		<result property="pname" column="pname" />
+		<result property="pcreatetime" column="pcreatetime" />
+		<result property="pcontent" column="pcontent" />
+		<result property="thumbanil" column="thumbanil" />
+		<result property="describe" column="pdescribe" />
+		
+		<result property="rownum" column="rownum" />
+		
+		<association property="dic" column="dicid" javaType="org.t1.qqzone.domain.Dic">
+			<id property="dicid" column="dicid" />
+			<result property="dicvalue" column="dicvalue" />
+		</association>
+		
+		<association property="album" column="albumid" javaType="org.t1.qqzone.domain.Album">
+			<id property="albumId" column="albumId" />
+			<result property="albumName" column="albumName" />
+			<result property="rownum" column="rownum" />
+			<result property="cover" column="cover" />
+			<result property="describe" column="adescribe" />
+			<association property="dic" column="dicid" javaType="org.t1.qqzone.domain.Dic">
+				<id property="dicid" column="dicid" />
+				<result property="dicvalue" column="dicvalue" />
+			</association>
+			
+			<association property="user" column="userid" javaType="org.t1.qqzone.domain.User">
+				<id property="userid" column="userid" />
+				<result property="username" column="username" />
+				<result property="realname" column="realname" />
+				<result property="password" column="password" />
+				<result property="email" column="email" />
+				<result property="sex" column="sex" />
+				<result property="birthday" column="birthday" />
+				<result property="address" column="address" />
+				<result property="img" column="img" />
+			
+				<association property="dic" column="dicid" javaType="org.t1.qqzone.domain.Dic">
+					<id property="dicid" column="dicid" />
+					<result property="dicvalue" column="dicvalue" />
+				</association>
+			</association>
+		</association>
+	</resultMap>
+	
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.t1.qqzone.persistence.LogActMapper">
+<!-- 显示所有日志  -->
+	<select id="findLogActAll"  resultMap="logMap"  parameterType="string">
+		select * from LogAct where userId=#{userId}
+	</select>
+<!-- 根据ID查看日志明细  -->
+  	<select id="getLogActById" resultMap="logMap" parameterType="string">
+  		select * from LogAct where logId = #{logId}
+  	</select>
+<!-- 添加日志 -->
+	<insert id="addLogAct" parameterType="LogAct">
+		insert into LogAct values(#{logId},#{user.userid},#{logTitle},#{logContent},#{logcreateTime})
+	</insert>
+<!-- 修改日志 -->
+	<update id="updateLogAct"  parameterType="LogAct">
+ update LogAct
+ <trim prefix="set" suffixOverrides=",">
+  <if test="logTitle!=null">logTitle=#{logTitle},</if>
+  <if test="logContent!=null">logContent=#{logContent},</if>
+  <if test="logcreateTime!=null">logcreateTime=#{logcreateTime},</if>
+ </trim>
+ WHERE logId=#{logId}
+</update>
+<!-- 根据ID删除日志  -->
+   <delete id="deleteLogAct"  parameterType="string">
+   		delete from LogAct where logId = #{logId}
+   </delete>  
+   <resultMap type="LogAct" id="logMap">
+   <id property="logId" column="logId"/>
+   <result property="logTitle" column="logTitle"/>
+   <result property="logContent" column="logContent"/>
+   <result property="logcreateTime" column="logcreateTime"/>
+     <association property="user" column="userid" javaType="org.t1.qqzone.domain.User">
+			<id property="userid" column="userid" />
+			<result property="username" column="username" />
+			<result property="realname" column="realname" />
+			<result property="password" column="password" />
+			<result property="email" column="email" />
+			<result property="sex" column="sex" />
+			<result property="birthday" column="birthday" />
+			<result property="address" column="address" />
+			<result property="img" column="img" />
+			<association property="dic" column="dicid" javaType="org.t1.qqzone.domain.Dic">
+				<id property="dicid" column="dicid" />
+				<result property="dicvalue" column="dicvalue" />
+		    </association>
+		</association>
+   </resultMap>
+ 
+</mapper>

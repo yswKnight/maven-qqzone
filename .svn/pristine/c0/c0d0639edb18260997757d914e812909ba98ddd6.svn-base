@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.t1.qqzone.persistence.SayPhotoMapper">
+<resultMap id="SayPhotoResultMap" type="SayPhoto">
+		<!-- 照片编号 -->
+		<id property="sayphotoid" column="sayphotoId" />
+		<!-- 说说照片路径 -->
+		<result property="photosrc" column="photosrc" />
+		<!-- 说说编号对象-->
+		 <association property="sayid" column="sayId" javaType="Say">
+			<id property="sayid" column="sayid" />
+			<result property="saycontent" column="saycontent" />
+			<result property="saycreatetime" column="saycreatetime" />
+			<!-- 发说说的用户 -->
+			<association property="userid" column="userid" javaType="User">
+				<id property="userid" column="userid" />
+				<result property="username" column="username" />
+				<result property="realname" column="realname" />
+				<result property="password" column="password" />
+				<result property="email" column="email" />
+				<result property="sex" column="sex" />
+				<result property="birthday" column="birthday" />
+				<result property="address" column="address" />
+				<result property="img" column="img" />
+				<!-- 发说说用户的用户类型 -->
+				<association property="dic" column="dicid" javaType="Dic">
+					<id property="dicid" column="dicid" />
+					<result property="dicvalue" column="dicvalue" />
+				</association>
+			</association>
+		</association>
+
+</resultMap>
+<!-- 根据sayid查看对应说说照片 -->
+	<select id="findSayImg" parameterType="String" resultMap="SayPhotoResultMap">
+  		select * from SayPhoto  left JOIN Say  on Say.sayid=SayPhoto.sayid where  Say.sayid=#{sayid}
+  	</select>
+	<!-- 添加照片地址-->
+	<insert id="insertSayPhoto" parameterType="SayPhoto">
+  		insert into sayphoto(sayphotoId,sayId,photosrc) values(#{sayphotoid,jdbcType = VARCHAR},#{sayid.sayid},#{photosrc,jdbcType = VARCHAR})
+ 	 </insert>
+</mapper>	

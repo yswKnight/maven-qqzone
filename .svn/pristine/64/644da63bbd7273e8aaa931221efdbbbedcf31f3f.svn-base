@@ -1,0 +1,56 @@
+		#panel-all{width:100%;border: 0px solid black;}
+		.panel-heading{width: 100%;height:40px;border: 0px solid black;margin-top:0px;}
+		.panel-heading ul li{float: left;margin-left:50px;list-style-type: none;}
+		.panel-heading ul{margin-top:0px;margin-left:-50px;}
+		.panel-heading ul li a{text-decoration: none;color:#5D7895;font-size:14px;}
+		.panel-heading ul li a:HOVER {font-weight: bold;}
+		
+		.box1{width:638px;border: 0px solid black;margin-top:0px;margin-left:7px;}
+		.box1 .boxcenter{width:630px;background:#fff;margin-top:-18px;margin-left:2px;border:1px solid #D9D9D9;border-radius:6px;}
+		.box1 .boxcenter .boxc_t{height:30px;line-height:30px;}
+		.box1 .boxcenter .boxc_t{padding-left:20px;background:#D9D9D9;border-top-left-radius:6px;
+				border-top-right-radius:6px;margin-top:0px;color:#5D7895;font-size: 14px; }
+		
+		.box1 .boxcenter .boxc_c{margin-left:15px;margin-top: 10px;width:595px;
+		border: 1px solid #D9D9D9;font-size: 14px;white-space:normal; 
+		min-height:50px; /*高度最小值设置为：100px*/
+		height:auto !important; /*兼容FF,IE7也支持 !important标签*/
+		height:50px; /*兼容ie6*/
+}
+		
+		.box1 .boxcenter .boxc_b{width:80px;height:30px;margin:-40px 0px 25px 533px;}
+		
+		.box1 .boxcenter .boxc_b a{font-size:14px;color:#fff;line-height:30px;background:#3bbfb4;border-radius:6px;
+				display:block;text-align:center;text-decoration:none;}
+		.box1 .boxcenter .boxc_b a:hover{background:#2C8E86;}
+		.boxc_a{margin-left:2px;margin-top: 10px;width:623px;
+		height: 25px;border: 1px solid #d9d9d9;font-size: 14px;
+		}
+		#textarea{margin-left: 2px;}
+		#phot{width: 30px;height: 30px;border: 0px solid black;margin-top: 5px;margin-left: 5px;float: left;}
+		#show{border: 1px solid #d9d9d9;width:630px;margin-top:10px;}
+		
+		#getHtml{margin-left: 540px;margin-top: 10px;}	
+		#uname{font-size: 14px;color: #5d7895}
+		.pc{font-size: 13px;color: #B3B3B3;}
+		#logdate{font-size: 13px;color: #B3B3B3;}
+		#logtitle{font-size: 14px;color: #5d7895;text-decoration: none; }
+		#logtext{font-size: 14px;color: #333333;}
+		#log-suan{font-size: 14px;color: #333333;}
+		#log{width:630px;}
+		.panel-heading{width:100%;}
+		#phot{width: 30px;height: 30px;border: 0px solid black;margin-top: 5px;margin-left: 5px;float: left;}
+		
+		/*日志列表样式代码*/
+		#showMyLog{border:1px #eee solid;width:99%;margin:0 auto;position:relative;bottom:10px;}
+		#showMyLog table{font-size:12px;margin-left:10px;width:97%;position:relative;top:10px;}
+		#showMyLog p{text-align:center;margin-top:20px;}
+		#showMyLog p a{padding:0 15px;}
+		
+		/*修改部分样式代码*/
+		#showOne{width:100%;}
+		#ltitle{border:1px #ADADAD solid;width:99%;text-align:center;margin:0 auto;font-size:24px;min-height:40px;}
+		#logcontent{border:1px #ADADAD solid;width:99%;margin:0 auto;text-indent: 2em;min-height:240px;}
+		#btn{margin-left:430px;width:90px;height:40px;border:1px #eee solid;}
+		#btn1{width:90px;height:40px;margin-left:10px;border:1px #eee solid;}
+

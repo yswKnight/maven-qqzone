@@ -1,0 +1,42 @@
+.box{width:637px;height:965px;border: 0px solid black;margin-top:0px;}
+		/*内容发布区域*/
+		.box .boxcenter{width:630px;height:170px;background:#fff;margin-top:0px;margin-left:2px;border:1px solid #D9D9D9;border-radius:6px;}
+		.box .boxcenter .boxc_t{height:30px;line-height:30px;}
+		.box .boxcenter .boxc_t{padding-left:20px;background:#D9D9D9;border-top-left-radius:6px;
+				border-top-right-radius:6px;margin-top:0px;color:#5D7895;font-size: 14px; }
+		.box .boxcenter .boxc_c{margin-left:15px;margin-top: 10px;width:585px;height: 70px;border: 1px solid #D9D9D9;font-size: 16px;}
+		.box .boxcenter .boxc_b{width:80px;height:30px;right:12px;bottom:8px;margin-left: 520px;margin-top: -25px;}
+		.box .boxcenter .boxc_b a{font-size:14px;color:#fff;line-height:30px;background:#3bbfb4;border-radius:6px;
+				display:block;text-align:center;text-decoration:none;}
+		.box .boxcenter .boxc_b a:hover{background:#2C8E86;}
+		.timeline .nextbox{width:630px;top:145px;margin-left:2px; border: 0px solid yellow;}/**显示*/
+		#time{font-size:12px;color:#ababab;width:400px;}
+		#hour{font-size:12px;color:#92CADE;}
+		#hour1{font-size:12px;color:#92CADE;}
+		#all{width: 640px;border: 0px solid green;height:999px;margin-top:0px;}
+		#all_log{width: 638px;height:30px;border: 0px solid black;margin-top:0px;}
+		#all_log ul li{float: left;margin-left:50px;list-style-type: none;}
+		#all_log ul{margin-top:0px;margin-left:-50px;}
+		#all_log ul li a{text-decoration: none;color:#5D7895;font-size:14px;}
+		#all_log ul li a:HOVER {font-weight: bold;}
+		
+		#photo{width:630px;margin-left:2px; border: 1px solid black;height: 300px;}
+		#phot{width: 30px;height: 30px;border: 0px solid black;margin-top: 5px;margin-left: 5px;float: left;}
+		#sayhome{width:637px;height:30px;border: 1px solid black;margin-top:10px;}
+		#sayqiang{width:637px;height:30px;border: 1px solid black;margin-top:10px;}
+		#img{width: 120px;height: 135px;}
+		#delete{width: 30px;height: 30px;}
+		.tr{height: 30px;font-size: 13px;}
+		#show{margin-top:3px; border: 1px solid #D9D9D9;}
+		#uname{font-size: 14px;color: #5d7895}
+		.nextbox table tr TD {font-size: 14px; padding-bottom: 10px}
+		.nextbox table{width:625px; margin-left: 3px;}
+		.nextbox font{font-size: 14px;margin-left: 20px;}
+		.nextbox a{font-size: 14px;margin-left: 20px; color: #5D7895}
+		#fn{margin-left: 260px;margin-top: 20px;}
+		a{text-decoration: none;}
+		#i{font-size: 12px;}
+		/**文件上传按钮美化
+		**/
+		
+	

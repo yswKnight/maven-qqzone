@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.t1.qqzone.persistence.UserMapper">
+
+	<!-- 查询所有用户 -->
+	<select id="findUserAll" resultType="User">
+		select * from Users
+	</select>
+
+	<!-- 查询登录用户是否存在 -->
+	<select id="userLogin" resultType="long">
+		select count(1) from Users
+		where userName = #{userName} and password =
+		#{password}
+	</select>
+
+	<!-- 注册员工信息 -->
+	<insert id="insertUser" parameterType="User">
+		insert into
+		users(userId,dicId,userName,realname,password,email,sex,birthday,address,img)
+		values(#{userName},#{dicId},#{realname},#{password},#{email},#{sex},#{birthday},#{birthdaddressay},#{img})
+	</insert>
+
+	<!-- 根据id删除员工 -->
+	<delete id="delEmpById" parameterType="int">
+		delete from t_emp where
+		tid = #{tid}
+	</delete>
+
+	<resultMap id="selectUserMap" type="User">
+		<id property="userid" column="userid" />
+		<result property="username" column="username" />
+		<result property="realname" column="realname" />
+		<result property="password" column="password" />
+		<result property="email" column="email" />
+		<result property="sex" column="sex" />
+		<result property="birthday" column="birthday" />
+		<result property="address" column="address" />
+		<result property="img" column="img" />
+		<association property="dic" column="dicid" javaType="Dic">
+			<id property="dicid" column="dicid"></id>
+			<result property="dicvalue" column="dicvalue" />
+		</association>
+	</resultMap>
+
+
+	<!-- 根据id查询用户 -->
+	<select id="getUserById" resultMap="selectUserMap">
+		select * from Users u,dic d
+		where u.dicid = d.dicid and userId = #{userId}
+	</select>
+
+	<!-- 修改个人用户资料 -->
+	<update id="updateUser" parameterType="User">
+		update Users
+		<set>
+			<if test="realname != null">
+				realname = #{realname,jdbcType = VARCHAR},
+			</if>
+			<if test="email != null">
+				email = #{email,jdbcType = VARCHAR},
+			</if>
+			<if test="sex != null">
+				sex = #{sex,jdbcType = INTEGER},
+			</if>
+			<if test="birthday != null">
+				birthday = #{birthday,jdbcType = DATE},
+			</if>
+			<if test="address != null">
+				address = #{address,jdbcType = VARCHAR},
+			</if>
+			<if test="img != null">
+				img = #{img,jdbcType = VARCHAR},
+			</if>
+		</set>
+		where userid = #{userid}
+	</update>
+
+	<!-- 修改密码 -->
+	<update id="updateUserForPass" parameterType="User">
+		update users set
+		password = #{password} where userid = #{userid}
+	</update>
+
+	<select id="queryUsersByPersonnal" parameterType="User"
+		resultMap="selectUserMap">
+		select * from Users u,dic d where u.dicid = d.dicid and d.dicid = 1
+		<if test="username != null">
+			AND username = #{username}
+		</if>
+		<if test="address != null">
+			AND address like #{address}
+		</if>
+		<if test="realname != null ">
+			AND realname like #{realname}
+		</if>
+		<if test="sex != null ">
+			AND sex = #{sex}
+		</if>
+	</select>
+
+</mapper>

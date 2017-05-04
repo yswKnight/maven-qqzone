@@ -1,0 +1,444 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    <title>好友管理</title>
+    
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<script type="text/javascript" src="js/address.js"></script>
+	 <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="js/layer/layer.js"></script>
+	<style type="text/css">
+		body{mrgin:0;padding:0;}
+		#main{width:88%;font-size:14px;}
+		#pcenter{height:40px;background-color: #A0D6F7;}
+		#pcenter span{position:relative;left:10px;float: left;margin-top:12px;}
+		#pcenter a{float: right;text-decoration: none;font-size: 12px;margin-top:12px;margin-right:5px;color:#6F6F6F;}
+		#pcenter a:hover{color:#f00;}
+		/*好友中心导航*/
+		#friendMenu{width:635px;height: 45px;position:relative;bottom:10px;}
+		#friendMenu li{list-style: none;float: left;position:relative;right:40px;top:14px;}
+		#friendMenu a{text-decoration: none;padding:15px 35px;color:#808080;color:#5D7895;}
+		#friendMenu a:hover{font-weight: bold;}
+		/*好友管理头部*/
+		#header{width: 100%;clear: both;}
+		#hleft{font-size:14px;margin-left:10px;}
+		#dianji{border:1px #fff solid;background-color:#AFDEF7;height:25px;}
+		#qqnumber{border:1px #A0D6F7 solid;height:25px;}
+		.click{
+			 background-color:  #999;	
+		}
+		#twindow{font-size:14px;}
+		/*分页样式*/
+		#hright p{text-align:center;}
+		#hright a{text-decoration:none;color:#000;padding:4px 20px;margin-left:10px;}
+		/*全查询显示的样式*/
+		#showUser{font-size:14px;font-family: "微软雅黑";text-align:center;}
+		.showInfo{border:1px #fff solid;height:30px;}
+	</style>
+	 
+	<script type="text/javascript">
+	
+		var s=["s1","s2","s3"]; 
+		var opt0 = ["省份","地级市","市、县级市、县"]; 
+		function setup() 
+		{ 
+		for(i=0;i<s.length-1;i++) 
+		document.getElementById(s[i]).onchange=new Function("change("+(i+1)+")"); 
+		change(0); 
+		} 
+	</script>
+	<script>
+  	$(function(){
+  		selectmyfriends();
+	   $("#dianji3").click(function(){
+	  	 		layer.open({
+	   				 type: 2,
+	   				 title:"信息中心",
+	   				 shade: false,
+	        		 area: ['80%','65%'],
+	        		 offset:['10px','65px'],
+	   				 maxmin: true,
+	   				 shift:5,
+	     			 content: 'friend/toInfoCenter',
+	   				 zIndex: layer.zIndex, //重点1
+	    			 success: function(layero){
+	       	 		 //layer.setTop(layero); //重点2
+	       	 
+	   		 		}
+				}); 
+  		 });
+	   //调用我的好友方法
+	   myfriends();
+  	});
+  
+  	function myfriends(){
+  		selectmyfriends();
+  	}
+ 
+  //高级查询用户
+  function listusers(pageno){
+  		 var qqnumber=$("#qqnumber").val();
+  		 var userid=$("#userid").val();
+  		 var sex=$("#sex").val();
+  		 var s1=$("#s1").val();
+  		 var s2=$("#s2").val();
+  		 var s3=$("#s3").val();
+  		 var address=s1+s2+s3;
+  		 if(s1=="省份"){
+  		  address="";
+  		 } else if(s2=="地级市"){
+  		  address=s1;
+  		 } else if(s3=="市、县级市、县"&&s2!="地级市"){
+  		  address=s1+s2;
+  		 } 
+  		 //alert(address);
+  		 
+  		$.ajax({
+  			   url:'friend/selectcallfriends1',
+  			   data:{"qqnumber":qqnumber,"userid":userid,"sex":sex,"address":address,"pageNow":pageno},
+		 	   dataType:"json",
+		 	   type:"POST",
+  			   success:function(data){
+  				 var content="";
+  				 
+  			 	if(data==""){
+  			 		content +="<table border='0' width='100%' style='font-size:14px;text-align:center;color:#f00;'>";
+  			 		content += "<tr>";
+  			 			content += "<td>当前条件查询为空！</td>";
+  			 		content += "<tr>";
+  			 		layer.msg("换个条件试试",{icon:6});
+  			 	}else{
+  			 			content += "<table border='0' width='100%' id='showUser'><tr><th>头像</th><th>QQ号</th><th>昵称</th><th>性别</th><th>地址</th><th>操作</th></tr>";
+ 			   			$.each(data.listObject,function(i,user){
+ 			   						content += "<tr>";
+ 			   						content += "<td><img src="+user.userimg+" width='50' height='50'></td>";
+ 			   						content += "<td >"+ user.qqnumber+"</td>";
+ 			   						content += "<td>"+ (user.username).substring(0,7)+"</td>";
+ 			   						if(user.sex==1){
+ 			   							content += "<td>男</td>";
+ 			   						}else{
+ 			   							content += "<td>女</td>";
+ 			   						}
+ 			   						content += "<td>"+ (user.address).substring(0,7)+"</td>";
+ 			   						content += "<td style='display:none'  value="+user.userid+">"+ user.userid+"</td>";
+ 			   						content += "<td class='dqqnumber'><input type='button' onclick='clickd2("+user.userid+");' class='showInfo' value='查看信息' ></a></td>";
+ 			   						content +="</tr>";
+ 			   						
+ 			   			});
+  			 	}	
+ 			   			content += "</table>";
+ 							
+ 			   		 		 
+ 			   			 
+ 			   			content+="<p><font size=2>共"+data.totalPageCount+"页</font>";
+ 							 
+ 									
+		 			   			content+="<font size=2>第"+data.pageNow+"页</font>";
+		 			   			content+="<a href=javascript:listusers("+1+")>首页</a>";
+		 			   			if(data.pageNow-1>0){
+		 			   		    content+="<a href=javascript:listusers("+(data.pageNow-1)+")>上一页</a>";
+		 			   			}
+		 			   			if(data.pageNow-1<=0){
+		 			   			  content+="<a href=javascript:listusers("+1+")>上一页</a>";
+		 			   			}
+		 			   			if(data.pageNow + 1<data.totalPageCount){
+		 			   			  	content+="<a   href=javascript:listusers("+(data.pageNow+1)+")>下一页</a>";
+		 			   			}
+		 			   			if(data.pageNow + 1>=data.totalPageCount){
+		 			   			
+		 			   			  	content+="<a href=javascript:listusers("+data.totalPageCount+")>下一页</a>";
+		 			   			}
+		 			   	
+		 			   			content+="<a href=javascript:listusers("+data.totalPageCount+")>尾页</a></p>";
+ 			   		   	$("#hright").html(content);
+				},
+		 	   error:function(){
+		 	 
+		 			   layer.msg("没找到合适的数据。换个条件试试",{icon:6});
+		 		}	
+  		});
+  	   }//查询结束
+  
+  //当[查看详细]被点击时，查询这个用户的详细信息并且可以对他发送加好友请求
+  function clickd2(userid){
+  		layer.open({
+							type : 1,
+							content : $("#xiangxi").toggle("slow"),
+							area : ['60%','300px'],
+							offset:['100px','80px'],
+							title : '查看他的详细信息',
+							skin : 'layui-layer-lan',
+							btn : ['加为好友','取消'],
+							yes : function(index,layero){
+							    insertmsg();
+							    layer.close(index);
+						 	},cancel : function (index){
+								
+						    }
+		}); //弹窗end
+		 
+		//查询1个用户详细信息
+		 
+  		$.ajax({
+  			   url:'friend/selectuserxinxibyuserid',
+  			   data:{"userid":userid},
+		 	   dataType:"json",
+		 	   type:"POST",
+  			   success:function(data){
+			   			var content = "<table   border='0' width='100%' style='font-size:13px;'>";
+			   			$.each(data,function(i,xiangxi){
+			   	  		content += "<tr><td rowspan='6' width='100' height='80'><img src="+xiangxi.userimg+" width='100' height='100'/></td><td class='mytds1'>QQ号：</td><td>"+xiangxi.qqnumber+"</td></tr>";
+			   	  		content += "<tr><td class='mytds1'>昵称：</td><td>"+xiangxi.username+"</td></tr>";
+			   	  		if(xiangxi.sex==1){
+			   				content += "<tr><td class='mytds1'>性别：</td><td>男</td></tr>";
+			   			}else{
+			   				content += "<tr><td class='mytds1'>性别：</td><td>女</td></tr>";
+			   			}
+			   	  		content += "<tr><td class='mytds1'>生日：</td><td>"+xiangxi.birthday+"</td></tr>";
+			   	  		content += "<tr><td class='mytds1'>邮箱：</td><td>"+xiangxi.email+"</td></tr>";
+			   	  		content += "<tr><td class='mytds1'>地址：</td><td>"+xiangxi.address+"</td></tr>";
+			   	  		content += "<tr style='display:none'><td class='mytds1'>编号：</td><td><input type='hidden' value="+xiangxi.userid+" id='touserid'></td></tr>";
+		 		 });
+ 			   		    content+="</table>";  
+ 			   		    content+="<table id='twindow'>";  
+ 			   		    content += "<tr><td>说点什么吧：</td><td><textarea cols='25' id='msgtext' ></textarea></td></tr>"; 	
+ 			   			content+="</table>"; 
+ 			   		    $("#xiangxi").html(content);
+		 	    },
+		 	   error:function(){
+		 			   	alert('服务器异常');
+		 		}	
+  		
+  		});//end ajax
+  }//end 
+  
+   function clickd3(userid){
+  var myid=$("#userid").val();
+  //我的id
+  
+  		layer.open({
+							type : 1,
+							content : $("#xiangxi").toggle("slow"),
+							area : ['60%','300px'],
+							offset:['100px','80px'],
+							title : '查看他的详细信息',
+							skin : 'layui-layer-lan',
+							btn : ['删除好友','返回'],
+							yes : function(index,layero){
+			 
+							 	    layer.msg('你确认要删除好友吗？', {
+			    time: 0 //不自动关闭
+			    ,btn: ['确认', '取消'],
+			    offset:['300px','100px']
+			    ,yes: function(index){
+	  	  		 $.ajax({
+							  url:'friend/deletefriend',
+  			   				  data:{"userid":myid,"touserid":userid},
+		 	   				  dataType:"json",
+		 	   				  type:"POST",
+		 	   				  
+		 	   				  success:function(data){
+		 	   				  
+		 	   				 
+		 	   				  },
+		 	   				  error:function(){
+		 	   				  layer.msg("已经从好友列表移除");
+		 	   				  selectmyfriends()
+		 	   				   layer.closeAll(); //疯狂模式，关闭所有层
+		 	   				  }
+							 
+							 })
+						 layer.closeAll(); //疯狂模式，关闭所有层	
+    			},cancel: function(index){
+    			   layer.closeAll(); 
+    			}
+			});
+							 
+						
+							 
+							 
+							   
+						 },cancel : function (index){
+						  layer.close(index);
+						 layer.closeAll(); //疯狂模式，关闭所有层	
+						 }
+		}); //弹窗end
+  	
+		//查询1个用户详细信息
+  		$.ajax({
+  			   url:'friend/selectuserxinxibyuserid',
+  			   data:{"userid":userid},
+		 	   dataType:"json",
+		 	   type:"POST",
+  			   success:function(data){
+		 			   var content = "<table   border='0' width='100%' style='font-size:13px;'>";
+		 			   $.each(data,function(i,xiangxi){
+		 			   			  
+		 			   	  		content += "<tr><td rowspan='6' width='100' height='80'><img src="+xiangxi.userimg+" width='100' height='100'/></td><td class='mytds1'>QQ号：</td><td>"+xiangxi.qqnumber+"</td></tr>";
+		 			   	  		content += "<tr><td class='mytds1'>昵称：</td><td>"+xiangxi.username+"</td></tr>";
+		 			   	  		if(xiangxi.sex==1){
+					   				content += "<tr><td  class='mytds1'>性别：</td><td>男</td></tr>";
+					   			}else{
+					   				content += "<tr><td  class='mytds1'>性别：</td><td>女</td></tr>";
+					   			}
+		 			   	  		content += "<tr><td class='mytds1'>生日：</td><td>"+xiangxi.birthday+"</td></tr>";
+		 			   	  		content += "<tr><td class='mytds1'>邮箱：</td><td>"+xiangxi.email+"</td></tr>";
+		 			   	  		content += "<tr><td class='mytds1'>地址：</td><td>"+xiangxi.address+"</td></tr>";
+		 			   	  		content += "<tr style='display:none'><td class='mytds1'>编号：</td><td><input type='hidden' value="+xiangxi.userid+" id='touserid'></td></tr>";
+		 		
+		 		 });
+		 			   	content+="</table>";  
+		 			   	$("#xiangxi").html(content);
+		 	   },
+		 	   error:function(){
+		 			   	alert('服务器异常');
+		 	   }	
+  		});//end ajax
+  }//end 
+  function insertmsg(){
+  	var touserid=$("#touserid").val();
+	var msgtext=$("#msgtext").val();
+	var sessionuserid=$("#userid").val();
+									
+    $.ajax({
+    	url:'friend/sendinsertmsg',
+  		data:{"userid":sessionuserid,"touserid":touserid,"msgtext":msgtext},
+		dataType:"json",
+		type:"POST",
+		success:function(data){
+		 	 if(data==null){
+		 		 layer.msg("你们已经是好友了！",{offset: '100px',icon:5});
+ 				 layer.close(index);
+		 	  }else{
+		 		 layer.msg("消息已经发给对方！",{offset: '100px',icon:1});
+		 	  }
+		},	
+    }); 	//ajax	
+  
+  }
+  
+  //查看我的好友
+  function selectmyfriends(){
+	  hideDiv();
+  	  $("#content").show();
+	  var userid=$("#userid").val();
+	  $.ajax({
+  	  	url:'friend/selectmyfriends',
+  		data:{"userid":userid},
+		dataType:"json",
+		type:"POST",
+  		success:function(data){
+  			var content="";
+		 	if(data==""){
+		 		content +="<table border='0' width='100%' style='font-size:14px;text-align:center;color:#5d7895;'>";
+		 		content += "<tr>";
+		 			content += "<td>你没有好友，赶紧去添加好友吧！</td>";
+		 		content += "<tr>";
+		 	}else{
+		 		
+		 	$.each(data,function(i,friends){
+		 		content += "<table border='0' width='100%' id='showUser'>";
+		 			content += "<tr>";
+		 				content += "<td><img src="+friends.touser.userimg+" width='50' height='50'></td>";
+ 						content += "<td >"+ friends.touser.qqnumber+"</td>";
+ 						content += "<td>"+ friends.touser.username+"</td>";
+ 						if(friends.touser.sex==1){
+			   				content += "<td>性别：</td><td>男</td>";
+			   			}else{
+			   				content += "<td>性别：</td><td>女</td>";
+			   			}
+ 						content += "<td>"+ friends.touser.address+"</td>";
+ 						content += "<td style='display:none' id='myfriendid' value="+friends.touser.userid+">"+ friends.touser.userid+"</td>";
+ 						content += "<td class='dqqnumber'><input type='button' onclick='clickd3("+friends.touserid+");' class='showInfo' value='查看信息' ></a></td>";
+ 					content += "</tr>";
+ 					content += "</table>";
+		 		});
+		 	}
+		 		
+		 		$("#content").html(content);
+			},
+		 	error:function(){
+		 			  alert('服务器异常');
+		 	 }	
+  		});
+  }
+   
+  		//隐藏div
+  		function hideDiv(){
+  			$("#header").hide();
+  			$("#content").hide();
+  			$("#xiangxi").hide();
+  		}
+  	  
+  		//跳转到添加查询
+  		function addFriend(){
+  			hideDiv();
+  	  		$("#header").show();
+  		//当 [查询] 被点击时 执行查询查询符合条件的信息 返回data
+  		  	$("#dianji").click(function(){
+  		  	 	 listusers();
+  		  		  $(".dqqnumber1").empty();
+  		   });
+  		}
+  
+  </script>
+  </head>
+<style>
+.mytds1{
+ text-align: center; 
+}
+
+
+</style>
+  <body onload="setup()">
+    	<div id="main">
+    		<div id="friendMenu">
+    			<ul>
+    				<li><a href="javascript:selectmyfriends();">我的好友</a></li>
+    				<li><a href="javascript:addFriend();">添加好友</a></li>
+
+    				<li><a href="friend/toInfoCenter">信息中心</a></li>
+    			</ul>
+    		</div>
+    		<hr>
+    		<div id="header">
+    			<div id="hleft">
+	    			<form action="" method="post">
+	    				<input type="hidden" name="userid" id="userid" value="${user.userid}"/>
+	    				<input type="text" name="qqnumber" id="qqnumber" size="17" placeholder="QQ账号 " style="border-radius:10px;">
+	    				<select id="sex" name="sex">
+	    					<option >未选择</option>
+	    				  	<option value="1">男</option>
+	    					<option value="0">女</option>
+	    				</select> 
+	    				<select id="s1"><option>省份</option></select> 
+						<select id="s2" style="width: 50px"><option>地级市</option></select> 
+						<select id="s3" style="width: 150px"><option>市、县级市、县</option></select> 
+	    				<input type="button" id="dianji" value="查询" style="border-radius:10px;">
+
+	    			</form>
+    			</div>
+    			<div id="hright"></div>
+    		</div>
+    		<div id="content">
+
+    		
+ 
+    		</div>
+    		<div id="xiangxi" style="display: none"></div>
+    	</div>
+    	<div id="con"></div>
+  </body>
+</html>

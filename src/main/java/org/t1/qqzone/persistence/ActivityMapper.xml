@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.t1.qqzone.persistence.ActivityMapper">
+	<!-- 添加日志动态 -->
+	<insert id="addActivity" parameterType="Activity">
+		insert into
+		Activitys(actId,sayId,logId,userId,photoId,dicId,actcreateTime)
+		values(#{actid},#{say.sayid},#{log.logId},#{user.userid},#{photo.photoid},#{dic.dicid},#{actcreatetime})
+	</insert>
+
+	<!-- 查询说说对应的图片路径 -->
+	<select id="getSayPictureSrc" parameterType="string" resultType="string">
+		select photosrc from sayphoto where sayid = #{sayId}
+	</select>
+
+	<!-- 添加照片动态 -->
+	<insert id="insertActivityByPhoto" parameterType="Activity">
+		insert into Activitys(actId,userId,photoId,dicId,actcreateTime)
+		values(#{actid},#{user.userid},#{photo.photoid},#{dic.dicid},#{actcreatetime})
+	</insert>
+	<!-- 根据照片查询动态 评论 -->
+	<select id="findActivityByPhoroId" parameterType="string"
+		resultMap="selectCommentsMap">
+		select c.* from activitys a,comments c
+		where c.actid=a.actid and a.photoid=#{photoid}
+	</select>
+
+	<!-- 赞动态 -->
+	<insert id="praiseActivity" parameterType="Praise">
+		insert into Praise
+		values(#{praid},#{actid},#{user.userid})
+	</insert>
+
+	<!-- 取消赞 -->
+	<delete id="backPraiseActivity" parameterType="Praise">
+		delete from praise
+		where actid = #{actid} and userid = #{user.userid}
+	</delete>
+
+	<!-- 删除日志动态 -->
+	<delete id="deleteActivity" parameterType="string">
+		delete from Activitys
+		where logId = #{logId}
+	</delete>
+
+	<!-- 查询动态相关的评论列表 -->
+	<select id="queryCommentsByActId" parameterType="string"
+		resultMap="selectCommentsMap">
+		select c.* from comments c,activitys a where c.actid =
+		a.actid
+		and c.actid = #{actId} order by corder
+	</select>
+
+
+	<!-- 查询点赞数 -->
+	<select id="getActPraiseCount" parameterType="string" resultMap='selectPraiseMap'>
+		select p.*,u.userid,u.realname from praise p,users u where p.userid =
+		u.userid and p.actid = #{actId}
+	</select>
+
+
+	<resultMap type="Comment" id="selectCommentsMap">
+		<id property="commid" column="commid" />
+		<result property="comcommid" column="com_commid" />
+		<result property="actid" column="actid" />
+		<result property="commcreatetime" column="commcreatetime" />
+		<result property="commcontent" column="commcontent" />
+		<result property="corder" column="corder" />
+		<!-- 发送评论的用户 -->
+		<association property="giveuser" column="userId" javaType="User">
+			<id property="userid" column="userId" />
+		</association>
+		<!-- 接受评论的用户 -->
+		<association property="adoptuser" column="toUser"
+			javaType="User">
+			<id property="userid" column="toUser" />
+		</association>
+	</resultMap>
+
+
+	<resultMap type="Praise" id="selectPraiseMap">
+		<id property="praid" column="praid" />
+		<result property="actid" column="actid" />
+		<association property="user" column="userid" javaType="User">
+			<id property="userid" column="userid" />
+			<result property="realname" column="realname" />
+		</association>
+	</resultMap>
+
+	<!-- 查询与我相关的动态 -->
+	<select id="queryActivitysByUserAndFriends" parameterType="java.util.Map"
+		resultMap="selectActivityMap">
+		select
+		a.*,s.*,l.*,u.userid,u.username,u.img,u.realname,p.*
+		from
+		activitys a left
+		join say s on a.sayid =
+		s.sayid
+		left join logact l
+		on
+		l.logid = a.logid
+		left join users u on
+		u.userid = a.userid
+		left join
+		photos p on p.photoid = a.photoid
+		where a.userid in(select use_userid
+		from friends where
+		userid =
+		#{userId} ) or
+		u.userid = #{userId}
+		order by
+		a.actcreatetime
+		desc limit
+		#{pageStart},#{pageSize}
+	</select>
+
+	<resultMap type="Activity" id="selectActivityMap">
+		<id property="actid" column="actid" />
+		<result property="actcreatetime" column="actcreatetime" />
+
+		<!-- 权限 -->
+		<association property="dic" column="dicid" javaType="Dic">
+			<id property="dicid" column="dicid" />
+			<result property="dicvalue" column="dicvalue" />
+		</association>
+
+		<!-- 发表的用户 -->
+		<association property="user" column="userid" javaType="User">
+			<id property="userid" column="userid" />
+			<result property="realname" column="realname" />
+			<result property="img" column="img" />
+		</association>
+
+		<!-- 说说对象 -->
+		<association property="say" column="sayid" javaType="Say">
+			<id property="sayid" column="sayid" />
+			<result property="saycontent" column="saycontent" />
+			<result property="saycreatetime" column="saycreatetime" />
+		</association>
+
+		<!-- 日志对象 -->
+		<association property="log" column="logid" javaType="LogAct">
+			<id property="logId" column="logId" />
+			<result property="logTitle" column="logTitle" />
+			<result property="logContent" column="logContent" />
+			<result property="logcreateTime" column="logcreateTime" />
+		</association>
+
+		<!-- 照片对象 -->
+		<association property="photo" column="photoid" javaType="Photo">
+			<id property="photoid" column="photoid" />
+			<result property="pname" column="pname" />
+			<result property="pcreatetime" column="pcreatetime" />
+			<result property="pcontent" column="pcontent" />
+			<result property="thumbanil" column="thumbanil" />
+			<result property="rownum" column="rownum" />
+		</association>
+
+	</resultMap>
+
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.t1.qqzone.persistence.RegionMapper">
+
+	<select id="findAllProvinces" resultType="Province">
+		select * from s_province
+	</select>
+
+	<select id="queryAllCitysByProvinceId" parameterType="int"
+		resultType="City">
+		select * from s_city where provinceid = #{provinceId}
+	</select>
+
+	<select id="queryAllDistrictByCityId" parameterType="int"
+		resultType="District">
+		select * from s_district where cityid = #{cityId}
+	</select>
+
+</mapper>

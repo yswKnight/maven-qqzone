@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.t1.qqzone.persistence.AlbumMapper">
+
+	<!-- 定义的resultMap，可以解决类的属性名和数据库列名不一致的问题-->
+	<resultMap type="Album" id="albumResultMap">
+		<id property="albumId" column="albumId" />
+		<result property="albumName" column="albumName" />
+		<result property="cover" column="cover" />
+		<result property="describe" column="adescribe" />
+		<result property="rownum" column="rownum" />
+		<association property="dic" column="dicid" javaType="org.t1.qqzone.domain.Dic">
+			<id property="dicid" column="dicid" />
+			<result property="dicvalue" column="dicvalue" />
+		</association>
+		<association property="user" column="userid" javaType="org.t1.qqzone.domain.User">
+			<id property="userid" column="userid" />
+			<result property="username" column="username" />
+			<result property="realname" column="realname" />
+			<result property="password" column="password" />
+			<result property="email" column="email" />
+			<result property="sex" column="sex" />
+			<result property="birthday" column="birthday" />
+			<result property="address" column="address" />
+			<result property="img" column="img" />
+			
+			<association property="dic" column="dicid" javaType="org.t1.qqzone.domain.Dic">
+				<id property="dicid" column="dicid" />
+				<result property="dicvalue" column="dicvalue" />
+			</association>
+			
+		</association>
+			
+	</resultMap>
+	
+	<!-- 查询所有 -->
+	<select id="findAllAlbum" resultMap="albumResultMap">
+		select * from Album where userid=#{userid}
+	</select>
+	
+	<!-- 查询单个 -->
+	<select id="getAlbumById" resultMap="albumResultMap" parameterType="string">
+		select * from Album where albumId = #{albumId}
+	</select>
+	
+	<!-- 添加相册 -->
+	<insert id="insertAlbum" parameterType="Album">
+		insert into Album values(#{albumId},#{dic.dicid},#{user.userid},#{albumName},#{cover},#{describe})
+	</insert>
+	
+	<!-- 编辑相册 -->
+	<update id="updateAlbum" parameterType="Album">
+		update Album set albumName=#{albumName},userId=#{user.userid},dicId=#{dic.dicid},cover=#{cover},adescribe=#{describe} where albumId=#{albumId}
+	</update>
+	<!-- 设置相册封面-->
+	<update id="updateAlbumByCover" parameterType="Album">
+		update Album set cover=#{cover} where albumId=#{albumId}
+	</update>
+	
+	<!-- 删除相册 -->
+	<delete id="deleteAlbum" parameterType="string">
+		delete from Album where albumId = #{albumId}
+	</delete>
+	<!-- 分页-->
+	 <select id="getListByPagenate" resultMap="albumResultMap">
+        select t.rownum, t.albumId, t.albumName, t.dicid, t.userid  from (
+        <include refid="getListSqlContainsRn" /> <include refid="orderBySql"/>
+        ) t <!-- #{}表示参数化输出，${}表示直接输出不进行任何转义操作，自己进行转移 -->
+        <if test="pageStart>-1 and pageSize>-1">
+            limit #{pageStart}, #{pageSize}
+        </if>
+    </select>
+    <sql id="orderBySql">
+        order by ${orderFieldStr} ${orderDirectionStr}
+    </sql>
+    <sql id="getListSqlContainsRn">
+        select @rownum:=@rownum+1 rownum,
+        result.albumId, result.albumName, result.dicid, result.userid
+        FROM (
+        select @rownum:=0, Album.* from Album where
+        1=1) result
+    </sql>
+    <!-- 查询记录数 -->
+    <select id="getListCount"  resultType="int">
+     	select count(*) from Album
+    </select>
+	
+</mapper>

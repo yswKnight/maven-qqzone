@@ -1,0 +1,43 @@
+
+	<style>
+		#caidan{
+		width: 600px;
+		height: 40px;
+		margin-left: 25px;
+			}
+		#span1{
+		display: block;
+		text-align: center;
+		width:322px;
+		height:40px;
+		color:#5d7895;
+		float: left;
+		margin-top: -38px;
+		margin-left: -25px;
+		
+	}
+	
+		#span2{
+		display: block;
+		text-align: center;
+		width:325px ;
+		float: left;
+		height:40px;
+		color:#5d7895;
+		font-family: cursive;
+		margin-top: -40px;
+		margin-left: 300px;
+		}
+	
+	#albumid{
+			width: 70px;
+			margin-top: 10px;
+	}
+	#a1{
+		display:block;
+		margin-top:10px;
+		text-align:center;
+			color:#5d7895;
+			text-decoration: none;;
+		}
+		

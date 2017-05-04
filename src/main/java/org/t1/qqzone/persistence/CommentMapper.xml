@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.t1.qqzone.persistence.CommentMapper">
+	
+	<!-- 查询   corder-->
+	<select id="getCommentCorder" resultType="Integer">
+		select max(corder) from comments
+	</select>
+	
+	<!-- 添加评论动态信息  -->
+	<insert id="save" parameterType="Comment">
+		insert into comments(commId,userId,Com_commid,actId,toUser,commcreateTime,commContent,corder)
+		values(#{commid},#{giveuser.userid},#{comcommid},#{actid},#{adoptuser.userid},#{commcreatetime},#{commcontent},#{newcorder})
+    </insert>
+  	
+  	<delete id="deleteComment"  parameterType="String">
+		delete from comments where commid = #{commid}
+	</delete>
+	
+</mapper>

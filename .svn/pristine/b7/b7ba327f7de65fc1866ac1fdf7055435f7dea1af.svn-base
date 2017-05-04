@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+
+	<!-- 定义别名 -->
+	<typeAliases>
+		<!--<typeAlias type="cn.itcast.mybatis.domain.User" alias="User"/ -->
+		<!-- 自动为包下取别名 -->
+		<package name="org.t1.qqzone.domain" />
+	</typeAliases>
+	<!-- <environments default="development"> <environment id="development"> 
+		<transactionManager type="JDBC" /> <dataSource type="POOLED"> <property name="driver" 
+		value="com.mysql.jdbc.Driver" /> <property name="url" value="jdbc:mysql:///mybatis_928" 
+		/> <property name="username" value="root" /> <property name="password" value="root" 
+		/> </dataSource> </environment> </environments> -->
+	<!-- 物理分页拦截器 -->
+	<!-- 支持的数据库 oracle,mysql,sqlserver2005+, mariadb,sqlite,hsqldb,postgresql,db2,informix -->
+	<!-- 该参数默认为false offsetAsPageNum -->
+	<!-- 设置为true时，会将RowBounds第一个参数offset当成pageNum页码使用 -->
+
+
+
+	<!-- 映射文件 <mappers> <mapper resource="org/kd/mapper/MovieDao.xml" /> <mapper 
+		resource="org/kd/mapper/MovieRoomDao.xml" /> <mapper resource="org/kd/mapper/MovieSeatDao.xml" 
+		/> <mapper resource="org/kd/mapper/MovieTimeDao.xml" /> <mapper resource="org/kd/mapper/MovieTypeDao.xml" 
+		/> <mapper resource="org/kd/mapper/OrdermxDao.xml" /> <mapper resource="org/kd/mapper/OrdersDao.xml" 
+		/> <mapper resource="org/kd/mapper/UserDao.xml" /> <mapper resource="org/kd/mapper/UserTypeDao.xml" 
+		/> </mappers> -->
+</configuration>

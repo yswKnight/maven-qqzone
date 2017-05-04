@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.t1.qqzone.persistence.LoginUserMapper">
+	
+	<!-- 查询登录用户权限  -->
+	<select id="findLoginUserBydicId" parameterType="Integer"   resultType="Dic" >
+		select * from Dic where dicId =#{dicId}
+	</select>
+	
+	<!-- 根据username查询user信息  -->
+	<select id="findByUserName" parameterType="String" resultType="User" >
+		select * from users where username = #{username}
+	</select>
+	
+	<!-- 根据id查询用户  -->
+  	<select id="getUserById"  resultMap="selectUserMap">
+  		select * from Users user,Dic dic where user.dicid = dic.dicid and user.userId = #{userId}
+  	</select>
+  	
+  	<!-- 查询用户是否存在 并给出盐值  -->
+	<select id="findUserByName" parameterType="String"  resultType="User" >
+		select * from Users where username = #{username}
+	</select>
+  	
+  	<!-- 修改密码 盐值-->
+  	<update id="updateUserForPassAndSalt" parameterType="User">
+  		update users set password = #{password},salt = #{salt} where username = #{username}
+  	</update>
+  	
+	<!-- 查询登录用户  -->
+  	<select id="userLogin" resultMap="selectUserMap">
+  		select user.userId,dic.dicid,user.userName,user.realname,user.email,user.img,user.salt from Users user ,Dic dic where user.dicid = dic.dicid and userName = #{username}
+  	</select>
+  	
+  	<resultMap id="selectUserMap" type="User">
+		<id property="userid" column="userid" />
+		<result property="username" column="username" />
+		<result property="realname" column="realname" />
+		<result property="email" column="email" />
+		<result property="img" column="img" />
+		<result property="salt" column="salt" />
+		<association property="dic" column="dicid"  javaType="Dic" >
+			<id  property="dicid" column="dicid" ></id>
+		</association>
+	</resultMap>
+	
+	<!-- 注册员工信息  -->
+	<insert id="insertUser" parameterType="User">
+		insert into users(userId,userName,dicId,realname,password,sex,birthday,address,salt)
+		values(#{userid},#{username},#{dic.dicid},#{realname},#{password},#{sex},#{birthday},#{address},#{salt})
+    </insert>
+    
+    <!--查询所有密保问题              ==============            忘记密码                                      -->
+	<select id="findForget" resultType="Dic" >
+		<![CDATA[
+			select * from Dic where dicId > 10 and dicId < 20
+		]]>
+	</select>
+	
+	<!--根据qq 号查询 其 对应的密保问题 -->
+	<select id="finduserIdGetProcte" parameterType="String" resultType ="PwdProtect" >
+		select pid pid, questionId questionId ,answer answer from pwdprotect where userId = (SELECT userid from users WHERE username = #{username})
+	</select>
+	
+	
+	<!--查询所有密保问题              ==============      修改用户资料               -->
+	<update id="updateUserData" parameterType="User">
+  		update users set 
+  		realname = #{realname} , email = #{email} ,
+  		sex = #{sex} , birthday = #{birthday} ,email=#{email},
+  		address = #{address} where username = #{username}
+  	</update>
+  	
+</mapper>

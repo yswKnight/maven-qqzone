@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.t1.qqzone.persistence.SayMapper">
+	<resultMap id="SayResultMap" type="Say">
+		<!-- 说说编号 -->
+		<id property="sayid" column="sayid" />
+		<!-- 说说内容 -->
+		<result property="saycontent" column="saycontent" />
+		<!-- 说说创建时间 -->
+		<result property="saycreatetime" column="saycreatetime" />
+		<!-- 用户对象 -->
+		 <association property="userid" column="userid" javaType="User">
+			<id property="userid" column="userid" />
+			<result property="username" column="username" />
+			<result property="realname" column="realname" />
+			<result property="password" column="password" />
+			<result property="email" column="email" />
+			<result property="sex" column="sex" />
+			<result property="birthday" column="birthday" />
+			<result property="address" column="address" />
+			<result property="img" column="img" />
+			<!-- 发说说用户的用户类型 -->
+			<association property="dic" column="dicid" javaType="Dic">
+				<id property="dicid" column="dicid" />
+				<result property="dicvalue" column="dicvalue" />
+		    </association>
+		</association>
+
+		
+	</resultMap>
+	<!-- 根据userid查看对应说说 -->
+	<select id="findSayallForUserid" parameterType="String" resultMap="SayResultMap">
+  		select sayid,Users.userid,saycontent,saycreatetime from Say  left JOIN Users  on Say.userid=Users.userid where  Say.userid=#{userid.userid} order by  saycreatetime desc
+  	</select>
+  		<!--根据ID查看说说详情     -->
+  	 <select id="findSayForSayid" parameterType="String" resultMap="SayResultMap">
+  		select * from Say where sayid=#{sayid}
+	  </select>
+  <!--添加说说  -->
+	  <insert id="insertSay" parameterType="Say">
+  		insert into Say(sayid,saycontent,saycreatetime,userid) values(#{sayid,jdbcType = VARCHAR},#{saycontent,jdbcType = VARCHAR},#{saycreatetime},#{userid.userid})
+ 	 </insert>
+ 	 <!-- 删除说说(三表连接删除) -->
+ 	  <delete id="deleteSay" parameterType="String">
+		delete Say,Activitys,SayPhoto from Say inner join Activitys ON Say.sayid=Activitys.sayid inner join SayPhoto on Say.sayid=SayPhoto.sayid WHERE Say.sayid=#{sayid}
+	 
+ 	 </delete>
+</mapper>

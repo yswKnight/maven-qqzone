@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.t1.qqzone.persistence.FriendMapper">
+
+	<!-- 查询我的好友 -->
+	<select id="queryMyFriends" parameterType="string" resultType="User">
+		select use_userid userid,username,img,realname from friends f,users u where f.userid = #{userId} and
+		u.userid = use_userid
+	</select>
+
+	<!-- 搜索用户 -->
+	<select id="queryUsersByPersonnal" parameterType="User"
+		resultType="User">
+		select * from users where 1 = 1
+		<if test="sex != null">
+			and sex like #{sex}
+		</if>
+
+		<if test="address != null">
+			and address like #{address}
+		</if>
+	</select>
+<!-- 根据ID删除好友  -->
+   <delete id="deleteFriend"  parameterType="Friend">
+   		delete from Friends where userid = #{userid} and Use_userId =#{user.userid}
+   </delete>  
+	<!-- 添加好友 -->
+	<insert id="insertFriend" parameterType="Friend">
+		insert into friends
+		values(#{friendid},#{userid},#{user.userid});
+	</insert>
+
+	<!-- 发送验证消息 -->
+	<insert id="sendMsg" parameterType="FriendMsg">
+		insert into friendmsg
+		values(#{msgid},#{user.userid},#{useuser.userid},#{msg},#{msgcreatetime},#{status});
+	</insert>
+
+	<!-- 按id查询 -->
+	<select id="getMsgById" parameterType="string" resultType="FriendMsg">
+		select * from friendmsg where msgid = #{msgId}
+	</select>
+
+	<!-- 处理消息 -->
+	<update id="dealMsg" parameterType="string">
+		update friendmsg set status =
+		'0' where msgid = #{msg.msgid}
+	</update>
+
+	<select id="detectionMyMsg" parameterType="string" resultMap="selectMsg">
+		select * from friendmsg f,users u where f.use_userid = #{userid} and
+		f.status = '1' and u.userid = f.userId
+	</select>
+
+	<select id="queryMyMsgByUserId" parameterType="string"
+		resultMap="selectMsg">
+		select * from friendmsg f,users u where f.use_userid =
+		#{userid} and u.userid = f.userId
+	</select>
+
+	<select id="getMsgByMsgId" parameterType="string" resultMap="selectMsg">
+		select * from friendmsg f,users u where f.msgid = #{msgId} and
+		u.userid = f.userId
+	</select>
+
+	<resultMap id="selectMsg" type="FriendMsg">
+		<id property="msgid" column="msgid" />
+		<result property="msg" column="msg" />
+		<result property="msgcreatetime" column="msgcreatetime" />
+		<result property="status" column="status" />
+		<association property="user" column="userid" javaType="User">
+			<id property="userid" column="userid"></id>
+			<result property="realname" column="realname" />
+			<result property="img" column="img" />
+		</association>
+	</resultMap>
+</mapper>
